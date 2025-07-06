@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calculator, Clock, Book, Star, Check } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useDailyChallenge } from "@/components/DailyChallenge";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +17,8 @@ const Index = () => {
     confidenceLevel: "",
     subscribeToTips: false
   });
+  const dailyChallenge = useDailyChallenge();
+  const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -25,8 +30,14 @@ const Index = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // TODO: Implement form submission logic
+    console.log("Quick signup form submitted:", formData);
+    toast({
+      title: "Thanks for your interest!",
+      description: "Please complete your registration on the signup page.",
+    });
+    
+    // Redirect to full signup page
+    window.location.href = '/signup';
   };
 
   return (
@@ -40,11 +51,13 @@ const Index = () => {
               <h1 className="text-2xl font-bold text-gray-900">SAT Math Pro</h1>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
-              <a href="#practice" className="text-gray-600 hover:text-blue-600 transition-colors">Practice</a>
-              <a href="#resources" className="text-gray-600 hover:text-blue-600 transition-colors">Resources</a>
+              <Link to="/practice" className="text-gray-600 hover:text-blue-600 transition-colors">Practice</Link>
+              <Link to="/videos" className="text-gray-600 hover:text-blue-600 transition-colors">Videos</Link>
+              <Link to="/resources" className="text-gray-600 hover:text-blue-600 transition-colors">Resources</Link>
               <Button variant="outline">Sign In</Button>
-              <Button>Get Started</Button>
+              <Button asChild>
+                <Link to="/signup">Get Started</Link>
+              </Button>
             </nav>
           </div>
         </div>
@@ -64,11 +77,11 @@ const Index = () => {
                 Join thousands of students achieving their dream scores.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button size="lg" className="text-lg px-8 py-3 bg-blue-600 hover:bg-blue-700">
-                  Start Free Practice
+                <Button asChild size="lg" className="text-lg px-8 py-3 bg-blue-600 hover:bg-blue-700">
+                  <Link to="/practice">Start Free Practice</Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-3">
-                  Watch Demo
+                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3">
+                  <Link to="/videos">Watch Demo</Link>
                 </Button>
               </div>
               <div className="mt-8 flex items-center justify-center lg:justify-start space-x-6 text-sm text-gray-500">
@@ -96,13 +109,9 @@ const Index = () => {
                 <div className="space-y-4">
                   <div className="bg-white/20 rounded-lg p-4">
                     <h3 className="font-semibold mb-2">Today's Challenge</h3>
-                    <p className="text-sm">If 3x + 5 = 20, what is the value of x?</p>
+                    <p className="text-sm">{dailyChallenge.question}</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/10 rounded-lg p-3 text-center">
-                      <div className="text-2xl font-bold">850+</div>
-                      <div className="text-xs">Students Helped</div>
-                    </div>
+                  <div className="grid grid-cols-1 gap-4">
                     <div className="bg-white/10 rounded-lg p-3 text-center">
                       <div className="text-2xl font-bold">95%</div>
                       <div className="text-xs">Score Improvement</div>
@@ -130,41 +139,47 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
-              <CardHeader>
-                <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                  <Clock className="h-6 w-6 text-blue-600" />
-                </div>
-                <CardTitle>Timed Practice</CardTitle>
-                <CardDescription>
-                  Simulate real SAT conditions with our adaptive timer and question bank
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            <Link to="/practice">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
+                <CardHeader>
+                  <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
+                    <Clock className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <CardTitle>Timed Practice</CardTitle>
+                  <CardDescription>
+                    Simulate real SAT conditions with our adaptive timer and question bank
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
 
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
-              <CardHeader>
-                <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
-                  <Book className="h-6 w-6 text-green-600" />
-                </div>
-                <CardTitle>Video Vault</CardTitle>
-                <CardDescription>
-                  Expert walkthrough videos for every topic and question type
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            <Link to="/videos">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
+                <CardHeader>
+                  <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
+                    <Book className="h-6 w-6 text-green-600" />
+                  </div>
+                  <CardTitle>Video Vault</CardTitle>
+                  <CardDescription>
+                    Expert walkthrough videos for every topic and question type
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
 
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
-              <CardHeader>
-                <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
-                  <Star className="h-6 w-6 text-purple-600" />
-                </div>
-                <CardTitle>Progress Tracking</CardTitle>
-                <CardDescription>
-                  Detailed analytics and personalized recommendations for improvement
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            <Link to="/resources">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
+                <CardHeader>
+                  <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
+                    <Star className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <CardTitle>Progress Tracking</CardTitle>
+                  <CardDescription>
+                    Detailed analytics and personalized recommendations for improvement
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>
@@ -181,9 +196,9 @@ const Index = () => {
 
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
-              <CardTitle className="text-center">Create Your Free Account</CardTitle>
+              <CardTitle className="text-center">Get Started Today</CardTitle>
               <CardDescription className="text-center">
-                Get instant access to practice questions and track your progress
+                Fill out this quick form to begin your SAT Math preparation
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -268,11 +283,11 @@ const Index = () => {
                 </div>
 
                 <Button type="submit" className="w-full" size="lg">
-                  Create Account & Start Learning
+                  Continue to Full Registration
                 </Button>
 
                 <p className="text-sm text-gray-500 text-center">
-                  By signing up, you agree to our Terms of Service and Privacy Policy
+                  By continuing, you agree to our Terms of Service and Privacy Policy
                 </p>
               </form>
             </CardContent>
@@ -296,19 +311,18 @@ const Index = () => {
             <div>
               <h3 className="font-semibold mb-4">Features</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>Practice Portal</li>
-                <li>Video Vault</li>
-                <li>Progress Tracking</li>
-                <li>Resource Library</li>
+                <li><Link to="/practice" className="hover:text-white transition-colors">Practice Portal</Link></li>
+                <li><Link to="/videos" className="hover:text-white transition-colors">Video Vault</Link></li>
+                <li><Link to="/resources" className="hover:text-white transition-colors">Resource Library</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>Help Center</li>
-                <li>Contact Us</li>
-                <li>Study Tips</li>
-                <li>FAQ</li>
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Study Tips</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
               </ul>
             </div>
             <div>
