@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calculator, Clock, Book, Star, Check } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useDailyChallenge } from "@/components/DailyChallenge";
+import { DailyChallengeWidget } from "@/components/DailyChallengeWidget";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -17,7 +16,6 @@ const Index = () => {
     confidenceLevel: "",
     subscribeToTips: false
   });
-  const dailyChallenge = useDailyChallenge();
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -54,6 +52,7 @@ const Index = () => {
               <Link to="/practice" className="text-gray-600 hover:text-blue-600 transition-colors">Practice</Link>
               <Link to="/videos" className="text-gray-600 hover:text-blue-600 transition-colors">Videos</Link>
               <Link to="/resources" className="text-gray-600 hover:text-blue-600 transition-colors">Resources</Link>
+              <Link to="/class-signup" className="text-gray-600 hover:text-blue-600 transition-colors">Classes</Link>
               <Button variant="outline">Sign In</Button>
               <Button asChild>
                 <Link to="/signup">Get Started</Link>
@@ -73,7 +72,7 @@ const Index = () => {
                 <span className="text-blue-600 block">Precision & Speed</span>
               </h2>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Boost your SAT Math score through interactive practice, expert videos, and personalized learning. 
+                Boost your SAT Math score through interactive practice, expert videos, personalized learning, and live classes. 
                 Join thousands of students achieving their dream scores.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -81,7 +80,7 @@ const Index = () => {
                   <Link to="/practice">Start Free Practice</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3">
-                  <Link to="/videos">Watch Demo</Link>
+                  <Link to="/class-signup">Join Our Classes</Link>
                 </Button>
               </div>
               <div className="mt-8 flex items-center justify-center lg:justify-start space-x-6 text-sm text-gray-500">
@@ -91,38 +90,18 @@ const Index = () => {
                 </span>
                 <span className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-1" />
-                  No credit card required
+                  Expert instruction
                 </span>
                 <span className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-1" />
-                  Expert guidance
+                  Proven results
                 </span>
               </div>
             </div>
             
-            {/* Hero Illustration */}
+            {/* Hero Illustration with Working Daily Challenge */}
             <div className="relative">
-              <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl p-8 text-white relative overflow-hidden">
-                <div className="absolute top-4 right-4 animate-bounce">
-                  <Calculator className="h-16 w-16 text-white/80" />
-                </div>
-                <div className="space-y-4">
-                  <div className="bg-white/20 rounded-lg p-4">
-                    <h3 className="font-semibold mb-2">Today's Challenge</h3>
-                    <p className="text-sm">{dailyChallenge.question}</p>
-                  </div>
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="bg-white/10 rounded-lg p-3 text-center">
-                      <div className="text-2xl font-bold">95%</div>
-                      <div className="text-xs">Score Improvement</div>
-                    </div>
-                  </div>
-                </div>
-                {/* Floating math symbols */}
-                <div className="absolute -top-2 -left-2 text-4xl opacity-30">π</div>
-                <div className="absolute top-1/2 -right-4 text-3xl opacity-30">∑</div>
-                <div className="absolute -bottom-2 left-1/3 text-2xl opacity-30">∞</div>
-              </div>
+              <DailyChallengeWidget />
             </div>
           </div>
         </div>
@@ -138,16 +117,16 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Link to="/practice">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
                 <CardHeader>
                   <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
                     <Clock className="h-6 w-6 text-blue-600" />
                   </div>
-                  <CardTitle>Timed Practice</CardTitle>
+                  <CardTitle>Practice Portal</CardTitle>
                   <CardDescription>
-                    Simulate real SAT conditions with our adaptive timer and question bank
+                    Interactive problems with instant feedback and detailed explanations
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -159,9 +138,9 @@ const Index = () => {
                   <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
                     <Book className="h-6 w-6 text-green-600" />
                   </div>
-                  <CardTitle>Video Vault</CardTitle>
+                  <CardTitle>Video Library</CardTitle>
                   <CardDescription>
-                    Expert walkthrough videos for every topic and question type
+                    Expert walkthrough videos for every SAT Math topic and strategy
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -173,9 +152,23 @@ const Index = () => {
                   <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
                     <Star className="h-6 w-6 text-purple-600" />
                   </div>
-                  <CardTitle>Progress Tracking</CardTitle>
+                  <CardTitle>Study Resources</CardTitle>
                   <CardDescription>
-                    Detailed analytics and personalized recommendations for improvement
+                    Formula sheets, practice tests, and comprehensive study guides
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
+
+            <Link to="/class-signup">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
+                <CardHeader>
+                  <div className="h-12 w-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-orange-200 transition-colors">
+                    <Calculator className="h-6 w-6 text-orange-600" />
+                  </div>
+                  <CardTitle>Live Classes</CardTitle>
+                  <CardDescription>
+                    Personalized instruction from experienced SAT Math tutors
                   </CardDescription>
                 </CardHeader>
               </Card>
