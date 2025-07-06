@@ -1,12 +1,331 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calculator, Clock, Book, Star, Check } from "lucide-react";
 
 const Index = () => {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    gradeLevel: "",
+    confidenceLevel: "",
+    subscribeToTips: false
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form submitted:", formData);
+    // TODO: Implement form submission logic
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-2">
+              <Calculator className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900">SAT Math Pro</h1>
+            </div>
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
+              <a href="#practice" className="text-gray-600 hover:text-blue-600 transition-colors">Practice</a>
+              <a href="#resources" className="text-gray-600 hover:text-blue-600 transition-colors">Resources</a>
+              <Button variant="outline">Sign In</Button>
+              <Button>Get Started</Button>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                Master SAT Math with
+                <span className="text-blue-600 block">Precision & Speed</span>
+              </h2>
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                Boost your SAT Math score through interactive practice, expert videos, and personalized learning. 
+                Join thousands of students achieving their dream scores.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button size="lg" className="text-lg px-8 py-3 bg-blue-600 hover:bg-blue-700">
+                  Start Free Practice
+                </Button>
+                <Button size="lg" variant="outline" className="text-lg px-8 py-3">
+                  Watch Demo
+                </Button>
+              </div>
+              <div className="mt-8 flex items-center justify-center lg:justify-start space-x-6 text-sm text-gray-500">
+                <span className="flex items-center">
+                  <Check className="h-4 w-4 text-green-500 mr-1" />
+                  Free to start
+                </span>
+                <span className="flex items-center">
+                  <Check className="h-4 w-4 text-green-500 mr-1" />
+                  No credit card required
+                </span>
+                <span className="flex items-center">
+                  <Check className="h-4 w-4 text-green-500 mr-1" />
+                  Expert guidance
+                </span>
+              </div>
+            </div>
+            
+            {/* Hero Illustration */}
+            <div className="relative">
+              <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl p-8 text-white relative overflow-hidden">
+                <div className="absolute top-4 right-4 animate-bounce">
+                  <Calculator className="h-16 w-16 text-white/80" />
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-white/20 rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">Today's Challenge</h3>
+                    <p className="text-sm">If 3x + 5 = 20, what is the value of x?</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white/10 rounded-lg p-3 text-center">
+                      <div className="text-2xl font-bold">850+</div>
+                      <div className="text-xs">Students Helped</div>
+                    </div>
+                    <div className="bg-white/10 rounded-lg p-3 text-center">
+                      <div className="text-2xl font-bold">95%</div>
+                      <div className="text-xs">Score Improvement</div>
+                    </div>
+                  </div>
+                </div>
+                {/* Floating math symbols */}
+                <div className="absolute -top-2 -left-2 text-4xl opacity-30">π</div>
+                <div className="absolute top-1/2 -right-4 text-3xl opacity-30">∑</div>
+                <div className="absolute -bottom-2 left-1/3 text-2xl opacity-30">∞</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Everything You Need to Excel</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Our comprehensive platform combines interactive practice, expert instruction, and personalized learning paths.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+              <CardHeader>
+                <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
+                  <Clock className="h-6 w-6 text-blue-600" />
+                </div>
+                <CardTitle>Timed Practice</CardTitle>
+                <CardDescription>
+                  Simulate real SAT conditions with our adaptive timer and question bank
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+              <CardHeader>
+                <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
+                  <Book className="h-6 w-6 text-green-600" />
+                </div>
+                <CardTitle>Video Vault</CardTitle>
+                <CardDescription>
+                  Expert walkthrough videos for every topic and question type
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+              <CardHeader>
+                <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
+                  <Star className="h-6 w-6 text-purple-600" />
+                </div>
+                <CardTitle>Progress Tracking</CardTitle>
+                <CardDescription>
+                  Detailed analytics and personalized recommendations for improvement
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Sign-up Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Start Your SAT Math Journey</h2>
+            <p className="text-xl text-gray-600">
+              Join hundreds of students who've improved their scores with our proven methods
+            </p>
+          </div>
+
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle className="text-center">Create Your Free Account</CardTitle>
+              <CardDescription className="text-center">
+                Get instant access to practice questions and track your progress
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="fullName">Full Name</Label>
+                    <Input
+                      id="fullName"
+                      name="fullName"
+                      type="text"
+                      required
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="Enter your email"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="gradeLevel">Grade Level</Label>
+                    <select
+                      id="gradeLevel"
+                      name="gradeLevel"
+                      required
+                      value={formData.gradeLevel}
+                      onChange={handleInputChange}
+                      className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      <option value="">Select grade level</option>
+                      <option value="9">9th Grade</option>
+                      <option value="10">10th Grade</option>
+                      <option value="11">11th Grade</option>
+                      <option value="12">12th Grade</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor="confidenceLevel">Math Confidence Level</Label>
+                    <select
+                      id="confidenceLevel"
+                      name="confidenceLevel"
+                      required
+                      value={formData.confidenceLevel}
+                      onChange={handleInputChange}
+                      className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      <option value="">Select confidence level</option>
+                      <option value="beginner">Beginner</option>
+                      <option value="intermediate">Intermediate</option>
+                      <option value="advanced">Advanced</option>
+                      <option value="expert">Expert</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    id="subscribeToTips"
+                    name="subscribeToTips"
+                    type="checkbox"
+                    checked={formData.subscribeToTips}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <Label htmlFor="subscribeToTips" className="font-normal">
+                    Subscribe to weekly SAT math tips and strategies
+                  </Label>
+                </div>
+
+                <Button type="submit" className="w-full" size="lg">
+                  Create Account & Start Learning
+                </Button>
+
+                <p className="text-sm text-gray-500 text-center">
+                  By signing up, you agree to our Terms of Service and Privacy Policy
+                </p>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <Calculator className="h-6 w-6" />
+                <span className="font-bold text-lg">SAT Math Pro</span>
+              </div>
+              <p className="text-gray-400">
+                Helping students master SAT Math with precision, speed, and confidence.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Features</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>Practice Portal</li>
+                <li>Video Vault</li>
+                <li>Progress Tracking</li>
+                <li>Resource Library</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>Help Center</li>
+                <li>Contact Us</li>
+                <li>Study Tips</li>
+                <li>FAQ</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Connect</h3>
+              <p className="text-gray-400 mb-2">
+                Founded by Shashwat Singh
+              </p>
+              <p className="text-gray-400">
+                shashwats17@gmail.com
+              </p>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 SAT Math Pro. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
