@@ -28,15 +28,13 @@ export const sendNotificationWebhook = async (
       type === "registration"
         ? REGISTRATION_WEBHOOK_URL
         : CLASS_SIGNUP_WEBHOOK_URL;
-    const fields: PayloadField[] = Object.entries(data).map(
-      ([key, val]) => ({
-        name: key
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase()),
-        value: String(val),
-        inline: !!["email", "gradeLevel"].includes(key),
-      })
-    );
+    const fields: PayloadField[] = Object.entries(data).map(([key, val]) => ({
+      name: key
+        .replace(/([A-Z])/g, " $1")
+        .replace(/^./, (str) => str.toUpperCase()),
+      value: String(val),
+      inline: !!["email", "gradeLevel"].includes(key),
+    }));
     const embedPayload = buildEmbed(
       type === "registration"
         ? "🔔 New User Registration"

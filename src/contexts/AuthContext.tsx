@@ -2,8 +2,8 @@ import React, {
   createContext,
   useContext,
   useState,
-  ReactNode,
   useEffect,
+  ReactNode,
 } from "react";
 import { sendRegistrationNotification } from "@/utils/webhookEmailService";
 
@@ -18,14 +18,16 @@ interface User {
 interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
-  register: (data: Omit<User, "password"> & { password: string }) => Promise<boolean>;
+  register: (data: User) => Promise<boolean>;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -34,16 +36,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const register = async (data: User): Promise<boolean> => {
-    // load existing users
     const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    if (users.find((u) => u.email === data.email)) {
-      return false; // duplicate
-    }
+    if (users.find((u) => u.email === data.email)) return false;
     users.push(data);
     localStorage.setItem("users", JSON.stringify(users));
     localStorage.setItem("currentUser", JSON.stringify(data));
     setUser(data);
-    // notify Discord
     await sendRegistrationNotification({
       fullName: data.fullName,
       email: data.email,
@@ -55,7 +53,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, password: string): Promise<boolean> => {
     const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
-    const found = users.find((u) => u.email === email && u.password === password);
+    const found = users.find(
+      (u) => u.email === email && u.password === password
+    );
     if (!found) return false;
     localStorage.setItem("currentUser", JSON.stringify(found));
     setUser(found);
