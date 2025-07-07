@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,8 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calculator, CheckCircle, Users } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ProfileDropdown } from "@/components/ProfileDropdown";
 import { useToast } from "@/hooks/use-toast";
-import emailjs from '@emailjs/browser';
+import { useAuth } from "@/contexts/AuthContext";
 
 const ClassSignup = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +21,7 @@ const ClassSignup = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { isAuthenticated, user } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -30,73 +31,34 @@ const ClassSignup = () => {
     }));
   };
 
-  const sendEmail = async (data: typeof formData) => {
-    try {
-      // Initialize EmailJS with your public key
-      emailjs.init("YOUR_PUBLIC_KEY"); // You'll need to replace this with your actual EmailJS public key
-      
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleDateString();
-      const formattedTime = currentDate.toLocaleTimeString();
-      
-      // Template parameters for the email
-      const templateParams = {
-        to_email: "shashwats17@gmail.com",
-        student_name: data.fullName,
-        student_email: data.email,
-        student_phone: data.phone,
-        grade_level: data.gradeLevel,
-        preferred_time: data.preferredTime,
-        comments: data.comments || "None",
-        submission_date: formattedDate,
-        submission_time: formattedTime,
-        reply_to: data.email
-      };
-
-      // Send email to instructor
-      await emailjs.send(
-        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
-        templateParams
-      );
-
-      // Send confirmation email to student
-      const studentTemplateParams = {
-        to_email: data.email,
-        student_name: data.fullName,
-        preferred_time: data.preferredTime,
-        grade_level: data.gradeLevel
-      };
-
-      await emailjs.send(
-        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-        'YOUR_STUDENT_TEMPLATE_ID', // Replace with your student confirmation template ID
-        studentTemplateParams
-      );
-
-      console.log("Emails sent successfully");
-      return true;
-    } catch (error) {
-      console.error("Email sending failed:", error);
-      throw error;
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
-      await sendEmail(formData);
+      // Simulate form submission
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Store registration in localStorage for demo purposes
+      const registrations = JSON.parse(localStorage.getItem('classRegistrations') || '[]');
+      const newRegistration = {
+        ...formData,
+        id: Date.now().toString(),
+        submissionDate: new Date().toISOString(),
+        userId: user?.id || null
+      };
+      registrations.push(newRegistration);
+      localStorage.setItem('classRegistrations', JSON.stringify(registrations));
+      
       setIsSubmitted(true);
       toast({
         title: "Registration Successful!",
-        description: "We've sent confirmation emails to both you and our instructor.",
+        description: "Your class registration has been submitted successfully. We'll contact you within 24 hours.",
       });
     } catch (error) {
       toast({
         title: "Registration Failed",
-        description: "There was an error sending the emails. Please try again or contact us directly.",
+        description: "There was an error submitting your registration. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -114,7 +76,7 @@ const ClassSignup = () => {
             </div>
             <CardTitle className="text-2xl">Registration Confirmed!</CardTitle>
             <CardDescription>
-              Thank you for registering for SAT Math Pro classes. We've sent confirmation emails to both you and our instructor.
+              Thank you for registering for SAT Math Pro classes. We've received your registration and will contact you soon.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -146,9 +108,13 @@ const ClassSignup = () => {
               <Link to="/practice" className="text-gray-600 hover:text-blue-600 transition-colors">Practice</Link>
               <Link to="/videos" className="text-gray-600 hover:text-blue-600 transition-colors">Videos</Link>
               <Link to="/resources" className="text-gray-600 hover:text-blue-600 transition-colors">Resources</Link>
-              <Button asChild variant="outline">
-                <Link to="/signup">Sign In</Link>
-              </Button>
+              {isAuthenticated ? (
+                <ProfileDropdown />
+              ) : (
+                <Button asChild variant="outline">
+                  <Link to="/signin">Sign In</Link>
+                </Button>
+              )}
             </nav>
           </div>
         </div>
