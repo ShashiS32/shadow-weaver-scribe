@@ -1,130 +1,89 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { sendRegistrationNotification, openEmailClient } from '@/utils/webhookEmailService';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+import { sendRegistrationNotification } from "@/utils/webhookEmailService";
 
 interface User {
-  id: string;
   fullName: string;
   email: string;
+  password: string;
   gradeLevel: string;
   confidenceLevel: string;
-  joinedDate: string;
 }
 
-interface AuthContextType {
+interface AuthContextValue {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (userData: Omit<User, 'id' | 'joinedDate'> & { password: string }) => Promise<boolean>;
-  logout: () => void;
   isAuthenticated: boolean;
+  register: (data: Omit<User, "password"> & { password: string }) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Check if user is already logged in
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
+    const stored = localStorage.getItem("currentUser");
+    if (stored) setUser(JSON.parse(stored));
   }, []);
 
-  const register = async (userData: Omit<User, 'id' | 'joinedDate'> & { password: string }): Promise<boolean> => {
-    try {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      
-      // Check if user already exists
-      if (users.find((u: any) => u.email === userData.email)) {
-        return false; // User already exists
-      }
-
-      const newUser: User & { password: string } = {
-        id: Date.now().toString(),
-        fullName: userData.fullName,
-        email: userData.email,
-        gradeLevel: userData.gradeLevel,
-        confidenceLevel: userData.confidenceLevel,
-        joinedDate: new Date().toISOString(),
-        password: userData.password
-      };
-
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-      
-      // Send registration notification via webhook
-      const webhookSent = await sendRegistrationNotification({
-        fullName: userData.fullName,
-        email: userData.email,
-        gradeLevel: userData.gradeLevel,
-        confidenceLevel: userData.confidenceLevel
-      });
-
-      // Also open email client for immediate notification
-      openEmailClient('registration', {
-        fullName: userData.fullName,
-        email: userData.email,
-        gradeLevel: userData.gradeLevel,
-        confidenceLevel: userData.confidenceLevel
-      });
-
-      if (!webhookSent) {
-        console.warn('Webhook notification failed to send, but account was created');
-      }
-      
-      // Auto-login after registration
-      const { password, ...userWithoutPassword } = newUser;
-      setUser(userWithoutPassword);
-      localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
-      
-      return true;
-    } catch (error) {
-      console.error('Registration failed:', error);
-      return false;
+  const register = async (data: User): Promise<boolean> => {
+    // load existing users
+    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
+    if (users.find((u) => u.email === data.email)) {
+      return false; // duplicate
     }
+    users.push(data);
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", JSON.stringify(data));
+    setUser(data);
+    // notify Discord
+    await sendRegistrationNotification({
+      fullName: data.fullName,
+      email: data.email,
+      gradeLevel: data.gradeLevel,
+      confidenceLevel: data.confidenceLevel,
+    });
+    return true;
   };
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    try {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find((u: any) => u.email === email && u.password === password);
-      
-      if (user) {
-        const { password: _, ...userWithoutPassword } = user;
-        setUser(userWithoutPassword);
-        localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Login failed:', error);
-      return false;
-    }
+    const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
+    const found = users.find((u) => u.email === email && u.password === password);
+    if (!found) return false;
+    localStorage.setItem("currentUser", JSON.stringify(found));
+    setUser(found);
+    return true;
   };
 
   const logout = () => {
+    localStorage.removeItem("currentUser");
     setUser(null);
-    localStorage.removeItem('currentUser');
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      login,
-      register,
-      logout,
-      isAuthenticated: !!user
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        register,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be inside AuthProvider");
+  return ctx;
 };
