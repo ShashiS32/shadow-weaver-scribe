@@ -1,6 +1,5 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { sendRegistrationEmail } from '@/utils/emailService';
+import { sendRegistrationNotification, openEmailClient } from '@/utils/webhookEmailService';
 
 interface User {
   id: string;
@@ -62,16 +61,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
       
-      // Send registration email
-      const emailSent = await sendRegistrationEmail({
+      // Send registration notification via webhook
+      const webhookSent = await sendRegistrationNotification({
         fullName: userData.fullName,
         email: userData.email,
         gradeLevel: userData.gradeLevel,
         confidenceLevel: userData.confidenceLevel
       });
 
-      if (!emailSent) {
-        console.warn('Registration email failed to send, but account was created');
+      // Also open email client for immediate notification
+      openEmailClient('registration', {
+        fullName: userData.fullName,
+        email: userData.email,
+        gradeLevel: userData.gradeLevel,
+        confidenceLevel: userData.confidenceLevel
+      });
+
+      if (!webhookSent) {
+        console.warn('Webhook notification failed to send, but account was created');
       }
       
       // Auto-login after registration

@@ -5,6 +5,7 @@ import { Calculator, Edit } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ProfileDropdown } from "@/components/ProfileDropdown";
 import { UserProfile } from "@/components/UserProfile";
+import { ProfileNavigation } from "@/components/ProfileNavigation";
 import { useAuth } from "@/contexts/AuthContext";
 
 const ProfileView = () => {
@@ -53,6 +54,8 @@ const ProfileView = () => {
             <h2 className="text-4xl font-bold text-gray-900 mb-4">My Profile</h2>
             <p className="text-xl text-gray-600">View your account information and progress</p>
           </div>
+
+          <ProfileNavigation />
 
           <div className="flex justify-center mb-6">
             <UserProfile />

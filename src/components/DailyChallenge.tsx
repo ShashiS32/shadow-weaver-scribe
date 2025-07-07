@@ -132,33 +132,41 @@ const challenges: Challenge[] = [
 ];
 
 export const getDailyChallenge = (): Challenge => {
-  // Get current date in EST
+  // Get current date and create a consistent seed
   const now = new Date();
-  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const est = new Date(utc + (-5 * 3600000)); // EST is UTC-5
+  const dateString = now.toDateString(); // This will be the same for the entire day
   
-  // Use the day of year to select a challenge
-  const start = new Date(est.getFullYear(), 0, 0);
-  const diff = est.getTime() - start.getTime();
-  const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+  // Create a simple hash from the date string
+  let hash = 0;
+  for (let i = 0; i < dateString.length; i++) {
+    const char = dateString.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
   
-  // Cycle through challenges based on day of year
-  return challenges[dayOfYear % challenges.length];
+  // Use absolute value and modulo to get a consistent index
+  const index = Math.abs(hash) % challenges.length;
+  
+  console.log(`Daily challenge for ${dateString}: Question ${index + 1}`);
+  
+  return challenges[index];
 };
 
 export const useDailyChallenge = () => {
   const [challenge, setChallenge] = useState<Challenge>(getDailyChallenge());
 
   useEffect(() => {
+    // Check for new day every hour
     const checkForNewDay = () => {
       const newChallenge = getDailyChallenge();
       if (newChallenge.question !== challenge.question) {
         setChallenge(newChallenge);
+        console.log('New daily challenge loaded');
       }
     };
 
-    // Check every minute for date change
-    const interval = setInterval(checkForNewDay, 60000);
+    // Check every hour for date change
+    const interval = setInterval(checkForNewDay, 60 * 60 * 1000);
     
     return () => clearInterval(interval);
   }, [challenge.question]);

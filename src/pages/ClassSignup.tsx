@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,7 @@ import { Link } from "react-router-dom";
 import { ProfileDropdown } from "@/components/ProfileDropdown";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { sendClassSignupEmail } from "@/utils/emailService";
+import { sendClassSignupNotification, openEmailClient } from "@/utils/webhookEmailService";
 
 const ClassSignup = () => {
   const [formData, setFormData] = useState({
@@ -48,16 +49,17 @@ const ClassSignup = () => {
       registrations.push(newRegistration);
       localStorage.setItem('classRegistrations', JSON.stringify(registrations));
       
-      // Send email notifications
-      const emailSent = await sendClassSignupEmail(formData);
+      // Send webhook notification and open email client
+      const webhookSent = await sendClassSignupNotification(formData);
+      openEmailClient('class_signup', formData);
       
       setIsSubmitted(true);
       toast({
         title: "Registration Successful!",
-        description: emailSent 
-          ? "Your class registration has been submitted and confirmation emails have been sent."
-          : "Your class registration has been submitted. Email notifications may have failed to send.",
-        variant: emailSent ? "default" : "destructive",
+        description: webhookSent 
+          ? "Your class registration has been submitted and notifications have been sent."
+          : "Your class registration has been submitted. Webhook notification may have failed.",
+        variant: "default",
       });
     } catch (error) {
       toast({
