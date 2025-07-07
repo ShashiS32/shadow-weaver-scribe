@@ -1,14 +1,22 @@
+// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { resolve } from "path";
 
 export default defineConfig({
-  // ensure asset URLs work on GH Pages under /<repo-name>/
+  // when deploying to GitHub Pages under /shadow-weaver-scribe/
   base: process.env.NODE_ENV === "production"
-    ? "/shadow-weaver-scribe>/"
+    ? "/shadow-weaver-scribe/"
     : "/",
+
+  resolve: {
+    alias: {
+      // now @/… points to src/
+      "@": resolve(__dirname, "src"),
+    },
+  },
+
   plugins: [
     react(),
-    tsconfigPaths()  // lets you keep using "@/…" paths
   ],
 });
