@@ -1,4 +1,9 @@
 {
+  "homepage": "https://<your-username>.github.io/<your-repo>",
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy":   "gh-pages -d build",
+
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2023"],
@@ -19,4 +24,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["vite.config.ts"]
+  }
 }
