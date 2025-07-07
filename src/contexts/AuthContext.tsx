@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { sendRegistrationEmail } from '@/utils/emailService';
 
 interface User {
   id: string;
@@ -60,6 +61,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
+      
+      // Send registration email
+      const emailSent = await sendRegistrationEmail({
+        fullName: userData.fullName,
+        email: userData.email,
+        gradeLevel: userData.gradeLevel,
+        confidenceLevel: userData.confidenceLevel
+      });
+
+      if (!emailSent) {
+        console.warn('Registration email failed to send, but account was created');
+      }
       
       // Auto-login after registration
       const { password, ...userWithoutPassword } = newUser;

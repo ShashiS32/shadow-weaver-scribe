@@ -12,6 +12,8 @@ import Resources from "./pages/Resources";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import ClassSignup from "./pages/ClassSignup";
+import ProfileView from "./pages/ProfileView";
+import ProfileSettings from "./pages/ProfileSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,8 @@ const App = () => (
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/class-signup" element={<ClassSignup />} />
+            <Route path="/profile" element={<ProfileView />} />
+            <Route path="/profile/settings" element={<ProfileSettings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

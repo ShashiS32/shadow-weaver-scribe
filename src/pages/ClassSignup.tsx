@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { ProfileDropdown } from "@/components/ProfileDropdown";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { sendClassSignupEmail } from "@/utils/emailService";
 
 const ClassSignup = () => {
   const [formData, setFormData] = useState({
@@ -36,9 +37,6 @@ const ClassSignup = () => {
     setIsLoading(true);
     
     try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
       // Store registration in localStorage for demo purposes
       const registrations = JSON.parse(localStorage.getItem('classRegistrations') || '[]');
       const newRegistration = {
@@ -50,10 +48,16 @@ const ClassSignup = () => {
       registrations.push(newRegistration);
       localStorage.setItem('classRegistrations', JSON.stringify(registrations));
       
+      // Send email notifications
+      const emailSent = await sendClassSignupEmail(formData);
+      
       setIsSubmitted(true);
       toast({
         title: "Registration Successful!",
-        description: "Your class registration has been submitted successfully. We'll contact you within 24 hours.",
+        description: emailSent 
+          ? "Your class registration has been submitted and confirmation emails have been sent."
+          : "Your class registration has been submitted. Email notifications may have failed to send.",
+        variant: emailSent ? "default" : "destructive",
       });
     } catch (error) {
       toast({

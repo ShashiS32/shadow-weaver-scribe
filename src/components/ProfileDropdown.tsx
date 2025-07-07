@@ -33,6 +33,16 @@ export const ProfileDropdown = () => {
     navigate('/');
   };
 
+  const handleViewProfile = () => {
+    setIsOpen(false);
+    navigate('/profile');
+  };
+
+  const handleSettings = () => {
+    setIsOpen(false);
+    navigate('/profile/settings');
+  };
+
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
@@ -93,7 +103,7 @@ export const ProfileDropdown = () => {
                 <Button 
                   variant="ghost" 
                   className="w-full justify-start"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleViewProfile}
                 >
                   <User className="h-4 w-4 mr-2" />
                   View Profile
@@ -101,7 +111,7 @@ export const ProfileDropdown = () => {
                 <Button 
                   variant="ghost" 
                   className="w-full justify-start"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleSettings}
                 >
                   <Settings className="h-4 w-4 mr-2" />
                   Settings
