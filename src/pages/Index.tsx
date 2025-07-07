@@ -1,5 +1,5 @@
 // src/pages/Index.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,7 @@ import { DailyChallengeWidget } from "@/components/DailyChallengeWidget";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
-const Index: React.FC = () => {
+const Index = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -30,10 +30,13 @@ const Index: React.FC = () => {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value, type, checked } = e.target as HTMLInputElement;
+    const { name, value, type } = e.target as HTMLInputElement;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        type === "checkbox"
+          ? (e.target as HTMLInputElement).checked
+          : value,
     }));
   };
 
@@ -44,7 +47,8 @@ const Index: React.FC = () => {
       title: "Thanks for your interest!",
       description: "Please complete your registration on the signup page.",
     });
-    window.location.href = "/signup";
+    // Redirect to full signup page
+    window.location.href = "/signin";
   };
 
   return (
@@ -208,10 +212,15 @@ const Index: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                >
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="fullName">Full Name</Label>
+                      <Label htmlFor="fullName">
+                        Full Name
+                      </Label>
                       <Input
                         id="fullName"
                         name="fullName"
@@ -222,7 +231,9 @@ const Index: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="email">Email Address</Label>
+                      <Label htmlFor="email">
+                        Email Address
+                      </Label>
                       <Input
                         id="email"
                         name="email"
@@ -237,7 +248,9 @@ const Index: React.FC = () => {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="gradeLevel">Grade Level</Label>
+                      <Label htmlFor="gradeLevel">
+                        Grade Level
+                      </Label>
                       <select
                         id="gradeLevel"
                         name="gradeLevel"
@@ -255,7 +268,9 @@ const Index: React.FC = () => {
                       </select>
                     </div>
                     <div>
-                      <Label htmlFor="confidenceLevel">Math Confidence Level</Label>
+                      <Label htmlFor="confidenceLevel">
+                        Math Confidence Level
+                      </Label>
                       <select
                         id="confidenceLevel"
                         name="confidenceLevel"
@@ -264,9 +279,13 @@ const Index: React.FC = () => {
                         onChange={handleInputChange}
                         className="w-full h-10 px-3 py-2 border rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
-                        <option value="">Select confidence level</option>
+                        <option value="">
+                          Select confidence level
+                        </option>
                         <option value="beginner">Beginner</option>
-                        <option value="intermediate">Intermediate</option>
+                        <option value="intermediate">
+                          Intermediate
+                        </option>
                         <option value="advanced">Advanced</option>
                         <option value="expert">Expert</option>
                       </select>
@@ -309,7 +328,9 @@ const Index: React.FC = () => {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Calculator className="h-6 w-6" />
-                <span className="font-bold text-lg">SAT Math Pro</span>
+                <span className="font-bold text-lg">
+                  SAT Math Pro
+                </span>
               </div>
               <p className="text-gray-400">
                 Helping students master SAT Math with precision,
@@ -320,17 +341,26 @@ const Index: React.FC = () => {
               <h3 className="font-semibold mb-4">Features</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <Link to="/practice" className="hover:text-white transition-colors">
+                  <Link
+                    to="/practice"
+                    className="hover:text-white transition-colors"
+                  >
                     Practice Portal
                   </Link>
                 </li>
                 <li>
-                  <Link to="/videos" className="hover:text-white transition-colors">
+                  <Link
+                    to="/videos"
+                    className="hover:text-white transition-colors"
+                  >
                     Video Vault
                   </Link>
                 </li>
                 <li>
-                  <Link to="/resources" className="hover:text-white transition-colors">
+                  <Link
+                    to="/resources"
+                    className="hover:text-white transition-colors"
+                  >
                     Resource Library
                   </Link>
                 </li>
@@ -340,22 +370,34 @@ const Index: React.FC = () => {
               <h3 className="font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a
+                    href="#"
+                    className="hover:text-white transition-colors"
+                  >
                     Help Center
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a
+                    href="#"
+                    className="hover:text-white transition-colors"
+                  >
                     Contact Us
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a
+                    href="#"
+                    className="hover:text-white transition-colors"
+                  >
                     Study Tips
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a
+                    href="#"
+                    className="hover:text-white transition-colors"
+                  >
                     FAQ
                   </a>
                 </li>
@@ -363,8 +405,12 @@ const Index: React.FC = () => {
             </div>
             <div>
               <h3 className="font-semibold mb-4">Connect</h3>
-              <p className="text-gray-400 mb-2">Founded by Shashwat Singh</p>
-              <p className="text-gray-400">shashwats17@gmail.com</p>
+              <p className="text-gray-400 mb-2">
+                Founded by Shashwat Singh
+              </p>
+              <p className="text-gray-400">
+                shashwats17@gmail.com
+              </p>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">

@@ -1,3 +1,6 @@
+// src/utils/webhookEmailService.ts
+
+/** Discord webhooks **/
 const REGISTRATION_WEBHOOK_URL =
   "https://discord.com/api/webhooks/1391818988274712729/kqQsz3nWoGB1VvfqeFxNhXsqY__INu4OcoaEozvg3WTPim3vQHydmN5sIbtFeSOagdoo";
 const CLASS_SIGNUP_WEBHOOK_URL =
@@ -9,7 +12,10 @@ interface PayloadField {
   inline?: boolean;
 }
 
-const buildEmbed = (title: string, fields: PayloadField[]) => ({
+const buildEmbed = (
+  title: string,
+  fields: PayloadField[]
+) => ({
   embeds: [
     {
       title,
@@ -28,30 +34,40 @@ export const sendNotificationWebhook = async (
       type === "registration"
         ? REGISTRATION_WEBHOOK_URL
         : CLASS_SIGNUP_WEBHOOK_URL;
-    const fields: PayloadField[] = Object.entries(data).map(([key, val]) => ({
-      name: key
-        .replace(/([A-Z])/g, " $1")
-        .replace(/^./, (str) => str.toUpperCase()),
-      value: String(val),
-      inline: !!["email", "gradeLevel"].includes(key),
-    }));
+
+    // build fields based on data
+    const fields: PayloadField[] = Object.entries(data).map(
+      ([key, val]) => ({
+        name: key
+          .replace(/([A-Z])/g, " $1")     // from camelCase to words
+          .replace(/^./, (str) => str.toUpperCase()),
+        value: String(val),
+        inline: !!["email", "gradeLevel"].includes(key),
+      })
+    );
+
     const embedPayload = buildEmbed(
       type === "registration"
         ? "🔔 New User Registration"
         : "📝 New Class Signup",
       fields
     );
+
     await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(embedPayload),
     });
+
+    console.log(`Discord ${type} webhook sent.`);
     return true;
-  } catch {
+  } catch (err) {
+    console.error("Discord webhook failed:", err);
     return false;
   }
 };
 
+// helper wrappers
 export const sendRegistrationNotification = (userData: {
   fullName: string;
   email: string;
@@ -67,3 +83,6 @@ export const sendClassSignupNotification = (formData: {
   preferredTime: string;
   comments: string;
 }) => sendNotificationWebhook("class_signup", formData);
+
+// you can leave openEmailClient…or remove if you don’t need it any more
+export const openEmailClient = (/*…*/) => { /*…*/ };

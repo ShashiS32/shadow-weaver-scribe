@@ -1,17 +1,14 @@
 {
   "name": "vite_react_shadcn_ts",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.0.0",
   "type": "module",
-  "homepage": "https://ShashiS32.github.io/shadow-weaver-scribe",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -82,7 +79,6 @@
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1",
-    "gh-pages": "^4.0.0"
+    "vite": "^5.4.1"
   }
 }
