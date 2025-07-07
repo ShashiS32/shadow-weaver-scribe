@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Calculator, CheckCircle, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import emailjs from '@emailjs/browser';
 
 const ClassSignup = () => {
   const [formData, setFormData] = useState({
@@ -30,41 +31,55 @@ const ClassSignup = () => {
   };
 
   const sendEmail = async (data: typeof formData) => {
-    // In a real application, you would use a backend service like EmailJS or a server endpoint
-    // For now, we'll simulate the email sending
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString();
-    const formattedTime = currentDate.toLocaleTimeString();
-    
-    const emailContent = {
-      to: ["shashwats17@gmail.com", data.email],
-      subject: "SAT Math Pro - New Class Registration",
-      body: `
-New class registration received:
+    try {
+      // Initialize EmailJS with your public key
+      emailjs.init("YOUR_PUBLIC_KEY"); // You'll need to replace this with your actual EmailJS public key
+      
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString();
+      const formattedTime = currentDate.toLocaleTimeString();
+      
+      // Template parameters for the email
+      const templateParams = {
+        to_email: "shashwats17@gmail.com",
+        student_name: data.fullName,
+        student_email: data.email,
+        student_phone: data.phone,
+        grade_level: data.gradeLevel,
+        preferred_time: data.preferredTime,
+        comments: data.comments || "None",
+        submission_date: formattedDate,
+        submission_time: formattedTime,
+        reply_to: data.email
+      };
 
-Student Information:
-- Name: ${data.fullName}
-- Email: ${data.email}
-- Phone: ${data.phone}
-- Grade Level: ${data.gradeLevel}
-- Preferred Time: ${data.preferredTime}
-- Comments: ${data.comments || "None"}
+      // Send email to instructor
+      await emailjs.send(
+        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
+        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+        templateParams
+      );
 
-Submission Details:
-- Date: ${formattedDate}
-- Time: ${formattedTime}
+      // Send confirmation email to student
+      const studentTemplateParams = {
+        to_email: data.email,
+        student_name: data.fullName,
+        preferred_time: data.preferredTime,
+        grade_level: data.gradeLevel
+      };
 
-Please follow up with the student to schedule their first class.
-      `
-    };
+      await emailjs.send(
+        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
+        'YOUR_STUDENT_TEMPLATE_ID', // Replace with your student confirmation template ID
+        studentTemplateParams
+      );
 
-    // Simulate email sending with a delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    console.log("Email would be sent to:", emailContent.to);
-    console.log("Email content:", emailContent.body);
-    
-    return true;
+      console.log("Emails sent successfully");
+      return true;
+    } catch (error) {
+      console.error("Email sending failed:", error);
+      throw error;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,12 +91,12 @@ Please follow up with the student to schedule their first class.
       setIsSubmitted(true);
       toast({
         title: "Registration Successful!",
-        description: "We've received your class registration and will contact you soon.",
+        description: "We've sent confirmation emails to both you and our instructor.",
       });
     } catch (error) {
       toast({
         title: "Registration Failed",
-        description: "There was an error submitting your registration. Please try again.",
+        description: "There was an error sending the emails. Please try again or contact us directly.",
         variant: "destructive",
       });
     } finally {
@@ -131,7 +146,9 @@ Please follow up with the student to schedule their first class.
               <Link to="/practice" className="text-gray-600 hover:text-blue-600 transition-colors">Practice</Link>
               <Link to="/videos" className="text-gray-600 hover:text-blue-600 transition-colors">Videos</Link>
               <Link to="/resources" className="text-gray-600 hover:text-blue-600 transition-colors">Resources</Link>
-              <Button variant="outline">Sign In</Button>
+              <Button asChild variant="outline">
+                <Link to="/signup">Sign In</Link>
+              </Button>
             </nav>
           </div>
         </div>
