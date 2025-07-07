@@ -1,88 +1,69 @@
-// src/utils/webhookEmailService.ts
 
-/** Discord webhooks **/
-const REGISTRATION_WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1391818988274712729/kqQsz3nWoGB1VvfqeFxNhXsqY__INu4OcoaEozvg3WTPim3vQHydmN5sIbtFeSOagdoo";
-const CLASS_SIGNUP_WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1391819024823881768/Z3mXieWXdXvIYtTObQ6KhHEfG4wiHAWxL3WkCQOxtkgHEAqONBNGo__-zA0MjHM0eac1";
+// Simple webhook-based email service that doesn't require credentials
+// Uses a free service like Webhook.site or similar for notifications
 
-interface PayloadField {
-  name: string;
-  value: string;
-  inline?: boolean;
+const WEBHOOK_URL = 'https://webhook.site/your-unique-webhook-url'; // Users can get this for free
+
+interface EmailData {
+  type: 'registration' | 'class_signup';
+  userData: any;
+  timestamp: string;
 }
 
-const buildEmbed = (
-  title: string,
-  fields: PayloadField[]
-) => ({
-  embeds: [
-    {
-      title,
-      fields,
-      timestamp: new Date().toISOString(),
-    },
-  ],
-});
-
-export const sendNotificationWebhook = async (
-  type: "registration" | "class_signup",
-  data: Record<string, any>
-): Promise<boolean> => {
+export const sendNotificationWebhook = async (type: 'registration' | 'class_signup', userData: any) => {
   try {
-    const url =
-      type === "registration"
-        ? REGISTRATION_WEBHOOK_URL
-        : CLASS_SIGNUP_WEBHOOK_URL;
+    const payload: EmailData = {
+      type,
+      userData,
+      timestamp: new Date().toISOString()
+    };
 
-    // build fields based on data
-    const fields: PayloadField[] = Object.entries(data).map(
-      ([key, val]) => ({
-        name: key
-          .replace(/([A-Z])/g, " $1")     // from camelCase to words
-          .replace(/^./, (str) => str.toUpperCase()),
-        value: String(val),
-        inline: !!["email", "gradeLevel"].includes(key),
-      })
-    );
-
-    const embedPayload = buildEmbed(
-      type === "registration"
-        ? "🔔 New User Registration"
-        : "📝 New Class Signup",
-      fields
-    );
-
-    await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(embedPayload),
+    // Send to webhook for admin notification
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
     });
 
-    console.log(`Discord ${type} webhook sent.`);
+    // Log to console for debugging
+    console.log(`${type} notification sent:`, payload);
+    
     return true;
-  } catch (err) {
-    console.error("Discord webhook failed:", err);
+  } catch (error) {
+    console.error('Webhook notification failed:', error);
     return false;
   }
 };
 
-// helper wrappers
-export const sendRegistrationNotification = (userData: {
+export const sendRegistrationNotification = async (userData: {
   fullName: string;
   email: string;
   gradeLevel: string;
   confidenceLevel: string;
-}) => sendNotificationWebhook("registration", userData);
+}) => {
+  return await sendNotificationWebhook('registration', userData);
+};
 
-export const sendClassSignupNotification = (formData: {
+export const sendClassSignupNotification = async (formData: {
   fullName: string;
   email: string;
   phone: string;
   gradeLevel: string;
   preferredTime: string;
   comments: string;
-}) => sendNotificationWebhook("class_signup", formData);
+}) => {
+  return await sendNotificationWebhook('class_signup', formData);
+};
 
-// you can leave openEmailClient…or remove if you don’t need it any more
-export const openEmailClient = (/*…*/) => { /*…*/ };
+// Simple browser-based email notification (opens default email client)
+export const openEmailClient = (type: 'registration' | 'class_signup', data: any) => {
+  const subject = type === 'registration' ? 'New User Registration - SAT Math Pro' : 'New Class Registration - SAT Math Pro';
+  const body = type === 'registration' 
+    ? `New user registered:\n\nName: ${data.fullName}\nEmail: ${data.email}\nGrade: ${data.gradeLevel}\nLevel: ${data.confidenceLevel}\nDate: ${new Date().toLocaleString()}`
+    : `New class registration:\n\nName: ${data.fullName}\nEmail: ${data.email}\nPhone: ${data.phone}\nGrade: ${data.gradeLevel}\nPreferred Time: ${data.preferredTime}\nComments: ${data.comments}\nDate: ${new Date().toLocaleString()}`;
+  
+  const mailtoLink = `mailto:your-email@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(mailtoLink, '_blank');
+};

@@ -1,18 +1,13 @@
-// src/pages/Index.tsx
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calculator, Clock, Book, Star, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { DailyChallengeWidget } from "@/components/DailyChallengeWidget";
+import { ProfileDropdown } from "@/components/ProfileDropdown";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -22,21 +17,16 @@ const Index = () => {
     email: "",
     gradeLevel: "",
     confidenceLevel: "",
-    subscribeToTips: false,
+    subscribeToTips: false
   });
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type } = e.target as HTMLInputElement;
-    setFormData((prev) => ({
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    setFormData(prev => ({
       ...prev,
-      [name]:
-        type === "checkbox"
-          ? (e.target as HTMLInputElement).checked
-          : value,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
   };
 
@@ -47,12 +37,43 @@ const Index = () => {
       title: "Thanks for your interest!",
       description: "Please complete your registration on the signup page.",
     });
+    
     // Redirect to full signup page
-    window.location.href = "/signin";
+    window.location.href = '/signin';
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-2">
+              <Calculator className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-gray-900">SAT Math Pro</h1>
+            </div>
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link to="/practice" className="text-gray-600 hover:text-blue-600 transition-colors">Practice</Link>
+              <Link to="/videos" className="text-gray-600 hover:text-blue-600 transition-colors">Videos</Link>
+              <Link to="/resources" className="text-gray-600 hover:text-blue-600 transition-colors">Resources</Link>
+              <Link to="/class-signup" className="text-gray-600 hover:text-blue-600 transition-colors">Classes</Link>
+              {isAuthenticated ? (
+                <ProfileDropdown />
+              ) : (
+                <>
+                  <Button asChild variant="outline">
+                    <Link to="/signin">Sign In</Link>
+                  </Button>
+                  <Button asChild>
+                    <Link to="/signin">Get Started</Link>
+                  </Button>
+                </>
+              )}
+            </nav>
+          </div>
+        </div>
+      </header>
+
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
@@ -60,30 +81,17 @@ const Index = () => {
             <div className="text-center lg:text-left">
               <h2 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
                 Master SAT Math with
-                <span className="text-blue-600 block">
-                  Precision & Speed
-                </span>
+                <span className="text-blue-600 block">Precision & Speed</span>
               </h2>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Boost your SAT Math score through interactive practice,
-                expert videos, personalized learning, and live
-                classes. Join thousands of students achieving their dream
-                scores.
+                Boost your SAT Math score through interactive practice, expert videos, personalized learning, and live classes. 
+                Join thousands of students achieving their dream scores.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button
-                  asChild
-                  size="lg"
-                  className="text-lg px-8 py-3 bg-blue-600 hover:bg-blue-700"
-                >
+                <Button asChild size="lg" className="text-lg px-8 py-3 bg-blue-600 hover:bg-blue-700">
                   <Link to="/practice">Start Free Practice</Link>
                 </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="text-lg px-8 py-3"
-                >
+                <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3">
                   <Link to="/class-signup">Join Our Classes</Link>
                 </Button>
               </div>
@@ -102,8 +110,8 @@ const Index = () => {
                 </span>
               </div>
             </div>
-
-            {/* Hero Illustration with Daily Challenge */}
+            
+            {/* Hero Illustration with Working Daily Challenge */}
             <div className="relative">
               <DailyChallengeWidget />
             </div>
@@ -115,15 +123,12 @@ const Index = () => {
       <section id="features" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Everything You Need to Excel
-            </h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Everything You Need to Excel</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our comprehensive platform combines interactive practice,
-              expert instruction, and personalized learning paths.
+              Our comprehensive platform combines interactive practice, expert instruction, and personalized learning paths.
             </p>
           </div>
-
+          
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Link to="/practice">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
@@ -133,8 +138,7 @@ const Index = () => {
                   </div>
                   <CardTitle>Practice Portal</CardTitle>
                   <CardDescription>
-                    Interactive problems with instant feedback and detailed
-                    explanations
+                    Interactive problems with instant feedback and detailed explanations
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -148,8 +152,7 @@ const Index = () => {
                   </div>
                   <CardTitle>Video Library</CardTitle>
                   <CardDescription>
-                    Expert walkthrough videos for every SAT Math topic and
-                    strategy
+                    Expert walkthrough videos for every SAT Math topic and strategy
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -163,8 +166,7 @@ const Index = () => {
                   </div>
                   <CardTitle>Study Resources</CardTitle>
                   <CardDescription>
-                    Formula sheets, practice tests, and comprehensive study
-                    guides
+                    Formula sheets, practice tests, and comprehensive study guides
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -178,7 +180,7 @@ const Index = () => {
                   </div>
                   <CardTitle>Live Classes</CardTitle>
                   <CardDescription>
-                    Small-group sessions with expert instructors
+                    Personalized instruction from experienced SAT Math tutors
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -187,43 +189,33 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Quick Sign-Up Section (only if not authenticated) */}
+      {/* Sign-up Section */}
       {!isAuthenticated && (
         <section className="py-20 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Start Your SAT Math Journey
-              </h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">Start Your SAT Math Journey</h2>
               <p className="text-xl text-gray-600">
-                Join hundreds of students who've improved their scores with
-                our proven methods
+                Join hundreds of students who've improved their scores with our proven methods
               </p>
             </div>
 
             <Card className="max-w-2xl mx-auto">
               <CardHeader>
-                <CardTitle className="text-center">
-                  Get Started Today
-                </CardTitle>
+                <CardTitle className="text-center">Get Started Today</CardTitle>
                 <CardDescription className="text-center">
-                  Fill out this quick form to begin your SAT Math
-                  preparation
+                  Fill out this quick form to begin your SAT Math preparation
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form
-                  onSubmit={handleSubmit}
-                  className="space-y-6"
-                >
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="fullName">
-                        Full Name
-                      </Label>
+                      <Label htmlFor="fullName">Full Name</Label>
                       <Input
                         id="fullName"
                         name="fullName"
+                        type="text"
                         required
                         value={formData.fullName}
                         onChange={handleInputChange}
@@ -231,9 +223,7 @@ const Index = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="email">
-                        Email Address
-                      </Label>
+                      <Label htmlFor="email">Email Address</Label>
                       <Input
                         id="email"
                         name="email"
@@ -248,16 +238,14 @@ const Index = () => {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="gradeLevel">
-                        Grade Level
-                      </Label>
+                      <Label htmlFor="gradeLevel">Grade Level</Label>
                       <select
                         id="gradeLevel"
                         name="gradeLevel"
                         required
                         value={formData.gradeLevel}
                         onChange={handleInputChange}
-                        className="w-full h-10 px-3 py-2 border rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
                         <option value="">Select grade level</option>
                         <option value="9">9th Grade</option>
@@ -268,24 +256,18 @@ const Index = () => {
                       </select>
                     </div>
                     <div>
-                      <Label htmlFor="confidenceLevel">
-                        Math Confidence Level
-                      </Label>
+                      <Label htmlFor="confidenceLevel">Math Confidence Level</Label>
                       <select
                         id="confidenceLevel"
                         name="confidenceLevel"
                         required
                         value={formData.confidenceLevel}
                         onChange={handleInputChange}
-                        className="w-full h-10 px-3 py-2 border rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
-                        <option value="">
-                          Select confidence level
-                        </option>
+                        <option value="">Select confidence level</option>
                         <option value="beginner">Beginner</option>
-                        <option value="intermediate">
-                          Intermediate
-                        </option>
+                        <option value="intermediate">Intermediate</option>
                         <option value="advanced">Advanced</option>
                         <option value="expert">Expert</option>
                       </select>
@@ -299,20 +281,19 @@ const Index = () => {
                       type="checkbox"
                       checked={formData.subscribeToTips}
                       onChange={handleInputChange}
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
-                    <Label htmlFor="subscribeToTips">
-                      Send me study tips & updates
+                    <Label htmlFor="subscribeToTips" className="font-normal">
+                      Subscribe to weekly SAT math tips and strategies
                     </Label>
                   </div>
 
-                  <Button type="submit" className="w-full">
-                    Get Started
+                  <Button type="submit" className="w-full" size="lg">
+                    Continue to Full Registration
                   </Button>
 
                   <p className="text-sm text-gray-500 text-center">
-                    By continuing, you agree to our Terms of Service and
-                    Privacy Policy
+                    By continuing, you agree to our Terms of Service and Privacy Policy
                   </p>
                 </form>
               </CardContent>
@@ -328,79 +309,27 @@ const Index = () => {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Calculator className="h-6 w-6" />
-                <span className="font-bold text-lg">
-                  SAT Math Pro
-                </span>
+                <span className="font-bold text-lg">SAT Math Pro</span>
               </div>
               <p className="text-gray-400">
-                Helping students master SAT Math with precision,
-                speed, and confidence.
+                Helping students master SAT Math with precision, speed, and confidence.
               </p>
             </div>
             <div>
               <h3 className="font-semibold mb-4">Features</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    to="/practice"
-                    className="hover:text-white transition-colors"
-                  >
-                    Practice Portal
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/videos"
-                    className="hover:text-white transition-colors"
-                  >
-                    Video Vault
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/resources"
-                    className="hover:text-white transition-colors"
-                  >
-                    Resource Library
-                  </Link>
-                </li>
+                <li><Link to="/practice" className="hover:text-white transition-colors">Practice Portal</Link></li>
+                <li><Link to="/videos" className="hover:text-white transition-colors">Video Vault</Link></li>
+                <li><Link to="/resources" className="hover:text-white transition-colors">Resource Library</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors"
-                  >
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors"
-                  >
-                    Contact Us
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors"
-                  >
-                    Study Tips
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors"
-                  >
-                    FAQ
-                  </a>
-                </li>
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Study Tips</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
               </ul>
             </div>
             <div>
