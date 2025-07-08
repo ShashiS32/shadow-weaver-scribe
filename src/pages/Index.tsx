@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Clock, Book, Star, Check } from "lucide-react";
+import { Calculator, Clock, Book, Star, Check, Users, Trophy, Target, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { DailyChallengeWidget } from "@/components/DailyChallengeWidget";
 import { ProfileDropdown } from "@/components/ProfileDropdown";
@@ -42,6 +42,13 @@ const Index = () => {
     window.location.href = '/signin';
   };
 
+  const stats = [
+    { icon: Users, label: "Students Helped", value: "10,000+" },
+    { icon: Trophy, label: "Average Score Increase", value: "150 points" },
+    { icon: Target, label: "Success Rate", value: "95%" },
+    { icon: Zap, label: "Practice Problems", value: "5,000+" }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
@@ -53,21 +60,14 @@ const Index = () => {
               <h1 className="text-2xl font-bold text-gray-900">SAT Math Pro</h1>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
-              <Link to="/practice" className="text-gray-600 hover:text-blue-600 transition-colors">Practice</Link>
-              <Link to="/videos" className="text-gray-600 hover:text-blue-600 transition-colors">Videos</Link>
               <Link to="/resources" className="text-gray-600 hover:text-blue-600 transition-colors">Resources</Link>
               <Link to="/class-signup" className="text-gray-600 hover:text-blue-600 transition-colors">Classes</Link>
               {isAuthenticated ? (
                 <ProfileDropdown />
               ) : (
-                <>
-                  <Button asChild variant="outline">
-                    <Link to="/signin">Sign In</Link>
-                  </Button>
-                  <Button asChild>
-                    <Link to="/signin">Get Started</Link>
-                  </Button>
-                </>
+                <Button asChild>
+                  <Link to="/signin">Sign In / Get Started</Link>
+                </Button>
               )}
             </nav>
           </div>
@@ -89,7 +89,7 @@ const Index = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button asChild size="lg" className="text-lg px-8 py-3 bg-blue-600 hover:bg-blue-700">
-                  <Link to="/practice">Start Free Practice</Link>
+                  <Link to="/resources">Start Free Practice</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3">
                   <Link to="/class-signup">Join Our Classes</Link>
@@ -119,8 +119,25 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Stats Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="mx-auto h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <stat.icon className="h-8 w-8 text-blue-600" />
+                </div>
+                <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
+                <div className="text-gray-600">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
+      <section id="features" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Everything You Need to Excel</h2>
@@ -129,30 +146,16 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Link to="/practice">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Link to="/resources">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
                 <CardHeader>
                   <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                    <Clock className="h-6 w-6 text-blue-600" />
+                    <Calculator className="h-6 w-6 text-blue-600" />
                   </div>
-                  <CardTitle>Practice Portal</CardTitle>
+                  <CardTitle>Practice by Topic</CardTitle>
                   <CardDescription>
-                    Interactive problems with instant feedback and detailed explanations
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-
-            <Link to="/videos">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
-                <CardHeader>
-                  <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
-                    <Book className="h-6 w-6 text-green-600" />
-                  </div>
-                  <CardTitle>Video Library</CardTitle>
-                  <CardDescription>
-                    Expert walkthrough videos for every SAT Math topic and strategy
+                    Interactive problems organized by SAT Math topics with instant feedback
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -161,12 +164,12 @@ const Index = () => {
             <Link to="/resources">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
                 <CardHeader>
-                  <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
-                    <Star className="h-6 w-6 text-purple-600" />
+                  <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
+                    <Book className="h-6 w-6 text-green-600" />
                   </div>
-                  <CardTitle>Study Resources</CardTitle>
+                  <CardTitle>Video Library</CardTitle>
                   <CardDescription>
-                    Formula sheets, practice tests, and comprehensive study guides
+                    Comprehensive video lessons covering all SAT Math concepts and strategies
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -175,8 +178,8 @@ const Index = () => {
             <Link to="/class-signup">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
                 <CardHeader>
-                  <div className="h-12 w-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-orange-200 transition-colors">
-                    <Calculator className="h-6 w-6 text-orange-600" />
+                  <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
+                    <Users className="h-6 w-6 text-purple-600" />
                   </div>
                   <CardTitle>Live Classes</CardTitle>
                   <CardDescription>
@@ -186,6 +189,19 @@ const Index = () => {
               </Card>
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Daily Challenge Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Today's Challenge</h2>
+            <p className="text-xl text-gray-600">
+              Test your skills with our daily SAT Math question. New challenges every day!
+            </p>
+          </div>
+          <DailyChallengeWidget />
         </div>
       </section>
 

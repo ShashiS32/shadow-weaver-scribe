@@ -1,246 +1,138 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Download, BookOpen, FileText, Target, Lightbulb, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { Calculator, Clock, Book, Video, FileText, Download, Star, Play, Users } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Header } from "@/components/Header";
 
 const Resources = () => {
-  const { toast } = useToast();
-
-  const handleDownload = (resourceName: string) => {
-    toast({
-      title: "Download Started",
-      description: `${resourceName} is being prepared for download.`,
-    });
-  };
-
-  const resources = [
-    {
-      title: "Complete Formula Sheet",
-      description: "All essential SAT Math formulas in one comprehensive guide",
-      icon: FileText,
-      type: "PDF",
-      size: "2.3 MB",
-      downloads: "12.5K"
-    },
-    {
-      title: "Practice Test Collection",
-      description: "10 full-length SAT Math practice tests with detailed solutions",
-      icon: BookOpen,
-      type: "PDF Bundle",
-      size: "15.7 MB", 
-      downloads: "8.9K"
-    },
-    {
-      title: "Study Strategy Guide",
-      description: "Proven methods and time management strategies for SAT Math",
-      icon: Target,
-      type: "PDF",
-      size: "4.1 MB",
-      downloads: "6.2K"
-    },
-    {
-      title: "Quick Reference Cards",
-      description: "Pocket-sized cards with key formulas and concepts",
-      icon: Download,
-      type: "PDF",
-      size: "1.8 MB",
-      downloads: "9.3K"
-    },
-    {
-      title: "Error Analysis Worksheet",
-      description: "Track and analyze your mistakes to improve faster",
-      icon: Lightbulb,
-      type: "PDF",
-      size: "0.9 MB",
-      downloads: "4.1K"
-    },
-    {
-      title: "Calculator Tips Guide",
-      description: "Master your calculator for maximum efficiency",
-      icon: Calculator,
-      type: "PDF",
-      size: "2.7 MB",
-      downloads: "7.8K"
-    }
+  const practiceTopics = [
+    { id: 1, title: "Algebra & Functions", problems: 45, difficulty: "Mixed", description: "Linear equations, quadratics, and function analysis" },
+    { id: 2, title: "Geometry & Trigonometry", problems: 38, difficulty: "Mixed", description: "Angles, triangles, circles, and basic trig" },
+    { id: 3, title: "Statistics & Probability", problems: 32, difficulty: "Mixed", description: "Data analysis, distributions, and probability" },
+    { id: 4, title: "Advanced Math", problems: 28, difficulty: "Hard", description: "Complex numbers, polynomials, and advanced functions" },
   ];
 
-  const studyTips = [
-    {
-      category: "Time Management",
-      tips: [
-        "Aim for 1.25 minutes per question on average",
-        "Skip difficult questions and return later",
-        "Use process of elimination strategically",
-        "Practice with a timer regularly"
-      ]
-    },
-    {
-      category: "Problem-Solving Strategies", 
-      tips: [
-        "Read questions carefully twice before solving",
-        "Identify what's being asked before calculating",
-        "Show your work clearly and systematically",
-        "Check your answers when time permits"
-      ]
-    },
-    {
-      category: "Test Day Preparation",
-      tips: [
-        "Bring a backup calculator and extra batteries",
-        "Get a good night's sleep before the test",
-        "Eat a nutritious breakfast on test day",
-        "Arrive at the test center early"
-      ]
-    },
-    {
-      category: "Common Mistakes to Avoid",
-      tips: [
-        "Don't make careless arithmetic errors",
-        "Watch out for negative signs in equations",
-        "Be careful with units and conversions",
-        "Double-check circle vs. radius problems"
-      ]
-    }
+  const videoSeries = [
+    { id: 1, title: "SAT Math Fundamentals", videos: 12, duration: "3.5 hours", level: "Beginner" },
+    { id: 2, title: "Problem-Solving Strategies", videos: 8, duration: "2.2 hours", level: "Intermediate" },
+    { id: 3, title: "Advanced Concepts", videos: 15, duration: "4.1 hours", level: "Advanced" },
+    { id: 4, title: "Test-Taking Tips", videos: 6, duration: "1.8 hours", level: "All Levels" },
+  ];
+
+  const studyMaterials = [
+    { title: "Complete Formula Sheet", type: "PDF", size: "2.3 MB", description: "All essential SAT Math formulas" },
+    { title: "Practice Test #1", type: "PDF", size: "4.1 MB", description: "Full-length practice exam with solutions" },
+    { title: "Quick Reference Guide", type: "PDF", size: "1.8 MB", description: "Key concepts and shortcuts" },
+    { title: "Calculator Tips", type: "PDF", size: "1.2 MB", description: "Effective calculator usage strategies" },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <Calculator className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">SAT Math Pro</h1>
-            </Link>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link to="/practice" className="text-gray-600 hover:text-blue-600 transition-colors">Practice</Link>
-              <Link to="/videos" className="text-gray-600 hover:text-blue-600 transition-colors">Videos</Link>
-              <Link to="/resources" className="text-blue-600 font-semibold">Resources</Link>
-              <Link to="/class-signup" className="text-gray-600 hover:text-blue-600 transition-colors">Classes</Link>
-              <Button variant="outline">Sign In</Button>
-              <Button asChild>
-                <Link to="/signup">Get Started</Link>
-              </Button>
-            </nav>
+      <Header />
+
+      <div className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">SAT Math Resources</h2>
+            <p className="text-xl text-gray-600">Everything you need to master SAT Math - practice, videos, and study materials</p>
           </div>
-        </div>
-      </header>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Study Resources</h1>
-          <p className="text-xl text-gray-600">Download comprehensive materials to accelerate your SAT Math preparation</p>
-        </div>
-
-        {/* Downloadable Resources */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Download Center</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {resources.map((resource, index) => {
-              const IconComponent = resource.icon;
-              return (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+          {/* Practice by Topic Section */}
+          <section className="mb-16">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                <Calculator className="h-6 w-6 text-blue-600 mr-2" />
+                Practice by Topic
+              </h3>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {practiceTopics.map((topic) => (
+                <Card key={topic.id} className="hover:shadow-lg transition-shadow cursor-pointer group">
                   <CardHeader>
-                    <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                      <IconComponent className="h-6 w-6 text-blue-600" />
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant={topic.difficulty === 'Hard' ? 'destructive' : 'secondary'}>
+                        {topic.difficulty}
+                      </Badge>
+                      <span className="text-sm text-gray-500">{topic.problems} problems</span>
                     </div>
-                    <CardTitle className="text-lg">{resource.title}</CardTitle>
-                    <CardDescription>{resource.description}</CardDescription>
+                    <CardTitle className="text-lg">{topic.title}</CardTitle>
+                    <CardDescription>{topic.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm text-gray-600">
-                        <span>{resource.type}</span>
-                        <span>{resource.size}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-500">{resource.downloads} downloads</span>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleDownload(resource.title)}
-                        >
-                          <Download className="h-4 w-4 mr-2" />
-                          Download
-                        </Button>
-                      </div>
-                    </div>
+                    <Button asChild className="w-full">
+                      <Link to="/practice-by-topic">
+                        <Play className="h-4 w-4 mr-2" />
+                        Start Practice
+                      </Link>
+                    </Button>
                   </CardContent>
                 </Card>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Study Tips & Strategies */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Study Tips & Strategies</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {studyTips.map((section, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Lightbulb className="h-5 w-5 text-yellow-600" />
-                    <span>{section.category}</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {section.tips.map((tip, tipIndex) => (
-                      <li key={tipIndex} className="flex items-start space-x-2">
-                        <div className="h-1.5 w-1.5 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-sm text-gray-700">{tip}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Score Improvement Guide */}
-        <Card className="bg-gradient-to-r from-green-500 to-blue-600 text-white">
-          <CardHeader>
-            <CardTitle className="text-2xl">Score Improvement Roadmap</CardTitle>
-            <CardDescription className="text-green-100">
-              Follow this structured approach to maximize your SAT Math score
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="bg-white/20 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold">1</span>
-                </div>
-                <h3 className="font-semibold mb-2">Diagnostic Assessment</h3>
-                <p className="text-sm text-white/90">Take a practice test to identify your strengths and weaknesses</p>
-              </div>
-              <div className="text-center">
-                <div className="bg-white/20 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold">2</span>
-                </div>
-                <h3 className="font-semibold mb-2">Targeted Practice</h3>
-                <p className="text-sm text-white/90">Focus on your weak areas while maintaining your strengths</p>
-              </div>
-              <div className="text-center">
-                <div className="bg-white/20 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold">3</span>
-                </div>
-                <h3 className="font-semibold mb-2">Test Strategy</h3>
-                <p className="text-sm text-white/90">Master time management and test-taking strategies</p>
-              </div>
+              ))}
             </div>
-            <div className="text-center mt-8">
-              <Button size="lg" variant="secondary" asChild>
-                <Link to="/class-signup">Get Personalized Guidance</Link>
-              </Button>
+          </section>
+
+          {/* Video Library Section */}
+          <section className="mb-16">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                <Video className="h-6 w-6 text-green-600 mr-2" />
+                Video Library
+              </h3>
             </div>
-          </CardContent>
-        </Card>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {videoSeries.map((series) => (
+                <Card key={series.id} className="hover:shadow-lg transition-shadow cursor-pointer group">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant="outline">{series.level}</Badge>
+                      <span className="text-sm text-gray-500">{series.videos} videos</span>
+                    </div>
+                    <CardTitle className="text-lg">{series.title}</CardTitle>
+                    <CardDescription>Duration: {series.duration}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button className="w-full" variant="outline">
+                      <Play className="h-4 w-4 mr-2" />
+                      Watch Series
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          {/* Study Materials Section */}
+          <section>
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                <FileText className="h-6 w-6 text-purple-600 mr-2" />
+                Study Materials
+              </h3>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {studyMaterials.map((material, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer group">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant="secondary">{material.type}</Badge>
+                      <span className="text-sm text-gray-500">{material.size}</span>
+                    </div>
+                    <CardTitle className="text-lg">{material.title}</CardTitle>
+                    <CardDescription>{material.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button className="w-full" variant="outline">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );

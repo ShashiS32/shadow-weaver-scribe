@@ -11,22 +11,16 @@ export const Header = () => {
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-2">
           <Calculator className="h-8 w-8 text-blue-600" />
           <h1 className="text-2xl font-bold text-gray-900">SAT Math Pro</h1>
-        </div>
+        </Link>
         <nav className="hidden md:flex items-center space-x-8">
           <Link
-            to="/practice"
+            to="/"
             className="text-gray-600 hover:text-blue-600 transition-colors"
           >
-            Practice
-          </Link>
-          <Link
-            to="/videos"
-            className="text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            Videos
+            Home
           </Link>
           <Link
             to="/resources"
@@ -44,11 +38,8 @@ export const Header = () => {
             <ProfileDropdown />
           ) : (
             <div className="flex items-center space-x-4">
-              <Button asChild variant="outline">
-                <Link to="/signin">Sign In</Link>
-              </Button>
               <Button asChild>
-                <Link to="/signup">Get Started</Link>
+                <Link to="/signin">Sign In / Get Started</Link>
               </Button>
             </div>
           )}
