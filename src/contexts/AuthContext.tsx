@@ -1,5 +1,6 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { sendRegistrationNotification, openEmailClient } from '@/utils/webhookEmailService';
+import { sendRegistrationNotification } from '@/utils/discordNotificationService';
 
 interface User {
   id: string;
@@ -35,7 +36,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check if user is already logged in
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        console.log('User restored from localStorage:', parsedUser);
+      } catch (error) {
+        console.error('Error parsing saved user:', error);
+        localStorage.removeItem('currentUser');
+      }
     }
   }, []);
 
@@ -45,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Check if user already exists
       if (users.find((u: any) => u.email === userData.email)) {
+        console.log('User already exists with email:', userData.email);
         return false; // User already exists
       }
 
@@ -60,31 +69,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
+      console.log('New user registered:', newUser);
       
-      // Send registration notification via webhook
-      const webhookSent = await sendRegistrationNotification({
+      // Send Discord notification
+      const notificationSent = await sendRegistrationNotification({
         fullName: userData.fullName,
         email: userData.email,
         gradeLevel: userData.gradeLevel,
         confidenceLevel: userData.confidenceLevel
       });
 
-      // Also open email client for immediate notification
-      openEmailClient('registration', {
-        fullName: userData.fullName,
-        email: userData.email,
-        gradeLevel: userData.gradeLevel,
-        confidenceLevel: userData.confidenceLevel
-      });
-
-      if (!webhookSent) {
-        console.warn('Webhook notification failed to send, but account was created');
+      if (!notificationSent) {
+        console.warn('Discord notification failed to send, but account was created');
       }
       
       // Auto-login after registration
       const { password, ...userWithoutPassword } = newUser;
       setUser(userWithoutPassword);
       localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
+      console.log('User auto-logged in after registration');
       
       return true;
     } catch (error) {
@@ -102,8 +105,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { password: _, ...userWithoutPassword } = user;
         setUser(userWithoutPassword);
         localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
+        console.log('User logged in successfully:', userWithoutPassword);
         return true;
       }
+      console.log('Login failed: Invalid credentials');
       return false;
     } catch (error) {
       console.error('Login failed:', error);
@@ -114,6 +119,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setUser(null);
     localStorage.removeItem('currentUser');
+    console.log('User logged out');
   };
 
   return (

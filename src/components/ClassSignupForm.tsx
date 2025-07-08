@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { sendClassSignupNotification, openEmailClient } from "@/utils/webhookEmailService";
+import { sendClassSignupNotification } from "@/utils/discordNotificationService";
 
 interface ClassSignupFormProps {
   onSuccess: () => void;
@@ -50,16 +50,15 @@ export const ClassSignupForm = ({ onSuccess }: ClassSignupFormProps) => {
       registrations.push(newRegistration);
       localStorage.setItem('classRegistrations', JSON.stringify(registrations));
       
-      // Send webhook notification and open email client
-      const webhookSent = await sendClassSignupNotification(formData);
-      openEmailClient('class_signup', formData);
+      // Send Discord notification
+      const notificationSent = await sendClassSignupNotification(formData);
       
       onSuccess();
       toast({
         title: "Registration Successful!",
-        description: webhookSent 
+        description: notificationSent 
           ? "Your class registration has been submitted and notifications have been sent."
-          : "Your class registration has been submitted. Webhook notification may have failed.",
+          : "Your class registration has been submitted. Discord notification may have failed.",
         variant: "default",
       });
     } catch (error) {
