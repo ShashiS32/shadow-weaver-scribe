@@ -40,17 +40,35 @@ export const sendDiscordNotification = async (type: 'registration' | 'classSignu
         timestamp: new Date().toISOString()
       };
     } else {
+      const isClassCancellation = data.comments && data.comments.includes('CLASS CANCELLED');
+      const isClassChange = data.comments && data.comments.includes('CLASS CHANGED');
+      
+      let title = "📚 New Class Registration";
+      let description = "A student has registered for SAT Math classes!";
+      let color = 0x10B981; // Green color
+      
+      if (isClassCancellation) {
+        title = "❌ Class Cancellation";
+        description = "A student has cancelled their SAT Math class registration.";
+        color = 0xEF4444; // Red color
+      } else if (isClassChange) {
+        title = "🔄 Class Schedule Change";
+        description = "A student has requested to change their SAT Math class schedule.";
+        color = 0xF59E0B; // Orange color
+      }
+
       embed = {
-        title: "📚 New Class Registration",
-        description: "A student has registered for SAT Math classes!",
-        color: 0x10B981, // Green color
+        title,
+        description,
+        color,
         fields: [
           { name: "👤 Name", value: data.fullName, inline: true },
           { name: "📧 Email", value: data.email, inline: true },
           { name: "📞 Phone", value: data.phone || "Not provided", inline: true },
           { name: "🎯 Grade Level", value: `${data.gradeLevel}th Grade`, inline: true },
           { name: "⏰ Preferred Time", value: data.preferredTime.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()), inline: true },
-          { name: "💬 Comments", value: data.comments || "No additional comments", inline: false }
+          { name: "💬 Comments", value: data.comments || "No additional comments", inline: false },
+          { name: "📅 Action Date", value: new Date().toLocaleDateString(), inline: true }
         ],
         timestamp: new Date().toISOString()
       };

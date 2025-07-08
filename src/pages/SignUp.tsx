@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calculator, CheckCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -18,7 +19,15 @@ const SignUp = () => {
     subscribeToTips: false
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { register } = useAuth();
+  const navigate = useNavigate();
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -28,16 +37,50 @@ const SignUp = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Sign up form submitted:", formData);
+    setIsLoading(true);
     
-    // Simulate successful registration
-    setIsSubmitted(true);
-    toast({
-      title: "Account Created Successfully!",
-      description: "Welcome to SAT Math Pro. You can now start practicing.",
-    });
+    // Validate email format
+    if (!validateEmail(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address with @ and . symbols.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const success = await register(formData);
+      
+      if (success) {
+        setIsSubmitted(true);
+        toast({
+          title: "Account Created Successfully!",
+          description: "Welcome to SAT Math Pro. You can now start practicing.",
+        });
+        // Navigate to profile after successful registration
+        setTimeout(() => {
+          navigate('/profile');
+        }, 2000);
+      } else {
+        toast({
+          title: "Registration Failed",
+          description: "An account with this email already exists. Please use a different email or sign in.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Registration Error",
+        description: "There was an error creating your account. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSubmitted) {
@@ -50,7 +93,7 @@ const SignUp = () => {
             </div>
             <CardTitle className="text-2xl">Welcome to SAT Math Pro!</CardTitle>
             <CardDescription>
-              Your account has been created successfully. You're ready to start your SAT Math journey.
+              Your account has been created successfully. You're being redirected to your profile.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -80,7 +123,9 @@ const SignUp = () => {
               <Link to="/practice" className="text-gray-600 hover:text-blue-600 transition-colors">Practice</Link>
               <Link to="/videos" className="text-gray-600 hover:text-blue-600 transition-colors">Videos</Link>
               <Link to="/resources" className="text-gray-600 hover:text-blue-600 transition-colors">Resources</Link>
-              <Button variant="outline">Sign In</Button>
+              <Button asChild variant="outline">
+                <Link to="/signin">Sign In</Link>
+              </Button>
             </nav>
           </div>
         </div>
@@ -196,8 +241,8 @@ const SignUp = () => {
                   </Label>
                 </div>
 
-                <Button type="submit" className="w-full" size="lg">
-                  Create Account & Start Learning
+                <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                  {isLoading ? "Creating Account..." : "Create Account & Start Learning"}
                 </Button>
 
                 <p className="text-sm text-gray-500 text-center">
