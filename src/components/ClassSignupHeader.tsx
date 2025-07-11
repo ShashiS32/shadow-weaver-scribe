@@ -23,7 +23,7 @@ export const ClassSignupHeader = () => {
           <h1 className="text-2xl font-bold text-gray-900">SAT Math Pro</h1>
         </Link>
         
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="flex items-center space-x-8">
           <Link
             to="/"
             className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
