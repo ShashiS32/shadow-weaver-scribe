@@ -10,9 +10,7 @@ export const ClassSignupHeader = () => {
   const location = useLocation();
 
   const isActive = (path: string) => {
-    if (path === "/" && location.pathname === "/") return true;
-    if (path !== "/" && location.pathname.startsWith(path)) return true;
-    return false;
+    return location.pathname === path;
   };
 
   return (
